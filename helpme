@@ -6,22 +6,32 @@
 VIM=${HELPME_EDITOR:-vim}
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+
 if [ -n "$1" ]; then
+    case "$1" in
+        -h|--h|--help|help)
+            echo -e "Usage: helpme [subject] [file]"
+            echo -e "\t- [subject] and [file] are optional"
+            echo -e "\t- [subject] defines the subject under helpme/subjects/"
+            echo -e "\t- [file] defines the file under that subject, defaults to help (.md is assumed)"
+            exit 0
+    esac
+
     subject="$1"
-    specific="help"
+    filename="help"
 
     if [ -n "$2" ]; then
-        specific="$2"
+        filename="$2"
     fi
 
-    file="$SCRIPT_DIR/subjects/$subject/$specific.md"
-    if [ -f "$file" ]; then
-        "$VIM" "$file"
+    filepath="$SCRIPT_DIR/subjects/$subject/$filename.md"
+    if [ -f "$filepath" ]; then
+        "$VIM" "$filepath"
     else
-        echo "$file not found"
+        echo "$filepath not found"
     fi
 else
-    file=$(find "$SCRIPT_DIR/subjects" -name '*.md' | fzf --prompt="Select help file: ")
-    [[ -n "$file" ]] && "$VIM" "$file"
+    filepath=$(find "$SCRIPT_DIR/subjects" -name '*.md' | fzf --prompt="Select file: ")
+    [[ -n "$filepath" ]] && "$VIM" "$filepath"
 fi
 

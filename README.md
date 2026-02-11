@@ -16,12 +16,12 @@ helpme
 
 Open a subject's `help.md` file  
 ```
-helpme <subject>
+helpme [subject]
 ```
 
 Open a specific .md file  
 ```
-helpme <subject> <specific>
+helpme [subject] [file]
 ```
 
 ## Example Commands
@@ -29,4 +29,4 @@ helpme <subject> <specific>
 `helpme vim motions` -> opens subjects/vim/motions.md  
 
 ## Personalize
-Feel free to add as many subjects and specifics as you want!
+Feel free to add as many subjects and files as you want!
