@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # --- INFO --- #
-# `helpme` opens interactive search with fzf
-# `helpme $1 $2` opens subjects/$1/$2.md, $2 defaults to 'help'
+# `tidbit` opens interactive search with fzf
+# `tidbit $1 $2` opens subjects/$1/$2.md, $2 defaults to 'tidbit'
 # --- --- #
 
 # Variables
-editor=${HELPME_EDITOR:-vim}
+editor=${TIDBIT_EDITOR:-vim}
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # --- Helper functions --- #
@@ -15,10 +15,10 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 handle_help() {
     case "${1,,}" in
         -h|--h|--help|help)
-            echo -e "Usage: helpme [subject] [file]"
+            echo -e "Usage: tidbit [subject] [file]"
             echo -e "\t- [subject] and [file] are optional"
-            echo -e "\t- [subject] defines the subject under helpme/subjects/"
-            echo -e "\t- [file] defines the file under that subject, defaults to help (.md is assumed)"
+            echo -e "\t- [subject] defines the subject under tidbit/subjects/"
+            echo -e "\t- [file] defines the file under that subject, defaults to tidbit (.md is assumed)"
             exit 0
     esac
 }
@@ -39,7 +39,7 @@ main() {
 
     if [ -n "$1" ]; then
         subject="$1"
-        filename="${2:-help}"
+        filename="${2:-tidbit}"
         filepath="$script_dir/subjects/$subject/$filename.md"
 
         if [ -f "$filepath" ]; then

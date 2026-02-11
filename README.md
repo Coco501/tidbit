@@ -1,32 +1,35 @@
-# Helpme
-A small CLI tool to keep track of useful tidbits 
-
+# tidbit
+tidbit is a lightweight command-line tool that keeps your notes organized and instantly accessible  
 
 ## Install
-Add the executable to your `PATH` by running the install script from inside this repository  
+After cloning the repository, run the install script from the root of the project  
 ```
 ./install.sh
 ```
+- installs `fzf` for interactive fuzzy searching  
+- adds `tidbit` to your PATH so it can be ran from anywhere  
 
 ## Usage
-Run the interactive program (ctrl+j, and ctrl+k for file selection)  
+Run tidbit in interactive mode (Ctrl+J and Ctrl+K for file selection)  
 ```
-helpme
-```
-
-Open a subject's `help.md` file  
-```
-helpme [subject]
+tidbit
 ```
 
-Open a specific .md file  
+Open a subject's `tidbit.md` file  
 ```
-helpme [subject] [file]
+tidbit [subject]
+```
+
+Open a specific `.md` file  
+```
+tidbit [subject] [file]
 ```
 
 ## Example Commands
-`helpme vim` -> opens subjects/vim/help.md  
-`helpme vim motions` -> opens subjects/vim/motions.md  
+`tidbit vim` - opens subjects/vim/tidbit.md  
+`tidbit vim motions` - opens subjects/vim/motions.md  
 
 ## Personalize
-Feel free to add as many subjects and files as you want!
+Add as many tidbits as you want!  
+I recommend making your own fork of this repository for easy version control  
+

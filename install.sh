@@ -30,7 +30,7 @@ install_fzf() {
 # Prompt user to select their editor of choice
 select_editor() {
     echo ""
-    read -rp "Which editor do you want to use with helpme? [vim/nvim/nano] " ans
+    read -rp "Which editor do you want to use with tidbit? [vim/nvim/nano] " ans
     case "${ans,,}" in 
         vim)
             EDITOR=vim
@@ -60,7 +60,7 @@ main() {
 
     fzf=$(which fzf)
     if [[ -z "$fzf" ]]; then
-        read -rp "helpme requires fzf for fuzzy searching, install it? [y/n] " ans
+        read -rp "tidbit requires fzf for fuzzy searching, install it? [y/n] " ans
         ans=${ans:-y} # default to y on enter pressed
         if [[ "${ans,,}" == "y" || "${ans,,}" == "yes" ]]; then
             if ! install_fzf; then
@@ -75,31 +75,31 @@ main() {
         fi
     fi
 
-    read -rp "Allow helpme to be added to your PATH via $HOME/.bashrc? [y/n] " ans
+    read -rp "Allow tidbit to be added to your PATH? [y/n] " ans
     ans=${ans:-y} # default to y on enter pressed
     if [[ "${ans,,}" == "y" || "${ans,,}" == "yes" ]]; then
         # Fetch dir of this script
-        HELPME_DIR="$(cd "$(dirname "$0")" && pwd)"
+        TIDBIT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-        if ! grep -q "$HELPME_DIR" "$HOME/.bashrc"; then
-            echo "# append helpme executable to path" >> "$HOME/.bashrc"
-            echo "export PATH=\"$HELPME_DIR:\$PATH\"" >> "$HOME/.bashrc"
+        if ! grep -q "$TIDBIT_DIR" "$HOME/.bashrc"; then
+            echo "# append tidbit executable to path" >> "$HOME/.bashrc"
+            echo "export PATH=\"$TIDBIT_DIR:\$PATH\"" >> "$HOME/.bashrc"
         else
-            echo -e "${C_YELLOW}'helpme' was already dded to PATH in $HOME/.bashrc${C_RESET}"
+            echo -e "${C_YELLOW}'tidbit' was already added to PATH in $HOME/.bashrc${C_RESET}"
         fi
 
         select_editor
 
-        if ! grep -q "HELPME_EDITOR" "$HOME/.bashrc"; then
-            echo "# editor used by helpme" >> "$HOME/.bashrc"
-            echo "export HELPME_EDITOR=$EDITOR" >> "$HOME/.bashrc"
+        if ! grep -q "TIDBIT_EDITOR" "$HOME/.bashrc"; then
+            echo "# editor used by tidbit" >> "$HOME/.bashrc"
+            echo "export TIDBIT_EDITOR=$EDITOR" >> "$HOME/.bashrc"
         else
-            echo -e "${C_YELLOW}\$HELPME_EDITOR was already set in $HOME/.bashrc${C_RESET}"
+            echo -e "${C_YELLOW}\$TIDBIT_EDITOR was already set in $HOME/.bashrc${C_RESET}"
         fi
 
-        echo -e "\n${C_GREEN}Installation complete, open a new terminal session and run 'helpme'\n${C_RESET}"
+        echo -e "\n${C_GREEN}Installation complete, open a new terminal session and run 'tidbit'\n${C_RESET}"
     else
-        echo "Permission to add helpme to PATH denied, exiting"
+        echo "Permission to add tidbit to PATH denied, exiting"
         exit 1
     fi
 }
