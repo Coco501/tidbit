@@ -1,14 +1,19 @@
 #!/bin/bash
 
+# --- INFO --- #
 # `helpme` opens interactive search with fzf
-# `helpme $1 $2` opens subjects/$1/$2.md, $2 defaults to 'help' if not provided
+# `helpme $1 $2` opens subjects/$1/$2.md, $2 defaults to 'help'
+# --- --- #
 
-VIM=${HELPME_EDITOR:-vim}
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Variables
+editor=${HELPME_EDITOR:-vim}
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# --- Helper functions --- #
 
-if [ -n "$1" ]; then
-    case "$1" in
+# Handles any help request
+handle_help() {
+    case "${1,,}" in
         -h|--h|--help|help)
             echo -e "Usage: helpme [subject] [file]"
             echo -e "\t- [subject] and [file] are optional"
@@ -16,22 +21,43 @@ if [ -n "$1" ]; then
             echo -e "\t- [file] defines the file under that subject, defaults to help (.md is assumed)"
             exit 0
     esac
+}
 
-    subject="$1"
-    filename="help"
-
-    if [ -n "$2" ]; then
-        filename="$2"
+# Checks for too many arguments
+validate_arg_count() {
+    if [ "$#" -gt 2 ]; then
+        echo "Too many arguments"
+        handle_help help
     fi
+}
+# --- --- #
 
-    filepath="$SCRIPT_DIR/subjects/$subject/$filename.md"
-    if [ -f "$filepath" ]; then
-        "$VIM" "$filepath"
+# --- Main --- #
+main() {
+    validate_arg_count "$@"
+    handle_help "$1"
+
+    if [ -n "$1" ]; then
+        subject="$1"
+        filename="${2:-help}"
+        filepath="$script_dir/subjects/$subject/$filename.md"
+
+        if [ -f "$filepath" ]; then
+            "$editor" "$filepath"
+        else
+            read -rp "$filepath not found, create it now? [y/n] " ans
+            if [[ "${ans,,}" == "y" || "${ans,,}" == "yes" ]]; then
+                mkdir -p "$(dirname -- "$filepath")" && touch -- "$filepath"
+                "$editor" "$filepath"
+            fi
+        fi
     else
-        echo "$filepath not found"
+        filepath=$(find "$script_dir/subjects" -name '*.md' | fzf --prompt="Select file: ")
+        [[ -n "$filepath" ]] && "$editor" "$filepath"
     fi
-else
-    filepath=$(find "$SCRIPT_DIR/subjects" -name '*.md' | fzf --prompt="Select file: ")
-    [[ -n "$filepath" ]] && "$VIM" "$filepath"
-fi
+}
+# --- --- #
+
+# --- Entrypoint --- #
+main "$@"
 
