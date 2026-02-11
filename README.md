@@ -1,5 +1,5 @@
 # Helpme
-A small program for saving and accessing useful tidbits  
+A small CLI tool to keep track of useful tidbits 
 
 
 ## Install
