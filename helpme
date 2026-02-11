@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# `helpme` opens interactive search with fzf
+# `helpme $1 $2` opens subjects/$1/$2.md, $2 defaults to 'help' if not provided
+
+VIM=${HELPME_EDITOR:-vim}
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+if [ -n "$1" ]; then
+    subject="$1"
+    specific="help"
+
+    if [ -n "$2" ]; then
+        specific="$2"
+    fi
+
+    file="$SCRIPT_DIR/subjects/$subject/$specific.md"
+    if [ -f "$file" ]; then
+        "$VIM" "$file"
+    else
+        echo "$file not found"
+    fi
+else
+    file=$(find "$SCRIPT_DIR/subjects" -name '*.md' | fzf --prompt="Select help file: ")
+    [[ -n "$file" ]] && "$VIM" "$file"
+fi
+
