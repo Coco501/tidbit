@@ -5,12 +5,12 @@
 # `tidbit $1 $2` opens subjects/$1/$2.md, $2 defaults to 'tidbit'
 # --- --- #
 
-# Variables
+# --- Variables --- #
 editor=${TIDBIT_EDITOR:-vim}
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# --- --- #
 
 # --- Helper functions --- #
-
 # Handles any help request
 handle_help() {
     case "${1,,}" in
