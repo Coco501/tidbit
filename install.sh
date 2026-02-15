@@ -31,7 +31,8 @@ install_fzf() {
 select_editor() {
     echo ""
     read -rp "Which editor do you want to use with tidbit? [vim/nvim/nano] " ans
-    case "${ans,,}" in 
+    ans=$(printf '%s' "$ans" | tr '[:upper:]' '[:lower:]')
+    case "${ans}" in
         vim)
             EDITOR=vim
             ;;
@@ -62,7 +63,8 @@ main() {
     if [[ -z "$fzf" ]]; then
         read -rp "tidbit requires fzf for fuzzy searching, install it? [y/n] " ans
         ans=${ans:-y} # default to y on enter pressed
-        if [[ "${ans,,}" == "y" || "${ans,,}" == "yes" ]]; then
+        ans=$(printf '%s' "$ans" | tr '[:upper:]' '[:lower:]')
+        if [[ "${ans}" == "y" || "${ans}" == "yes" ]]; then
             if ! install_fzf; then
                 echo -e "${C_RED}Could not detect a supported package manager${C_RESET}"
                 echo "Please install fzf manually: https://github.com/junegunn/fzf?tab=readme-ov-file#using-git"
@@ -77,7 +79,8 @@ main() {
 
     read -rp "Allow tidbit to be added to your PATH? [y/n] " ans
     ans=${ans:-y} # default to y on enter pressed
-    if [[ "${ans,,}" == "y" || "${ans,,}" == "yes" ]]; then
+    ans=$(printf '%s' "$ans" | tr '[:upper:]' '[:lower:]')
+    if [[ "${ans}" == "y" || "${ans}" == "yes" ]]; then
         # Fetch dir of this script
         TIDBIT_DIR="$(cd "$(dirname "$0")" && pwd)"
 

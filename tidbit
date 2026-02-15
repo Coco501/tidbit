@@ -13,7 +13,8 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Handles any help request
 handle_help() {
-    case "${1,,}" in
+    arg1=$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')
+    case "${arg1}" in
         -h|--h|--help|help)
             echo -e "Usage: tidbit [subject] [file]"
             echo -e "\t- [subject] and [file] are optional"
@@ -46,7 +47,9 @@ main() {
             "$editor" "$filepath"
         else
             read -rp "$filepath not found, create it now? [y/n] " ans
-            if [[ "${ans,,}" == "y" || "${ans,,}" == "yes" ]]; then
+            ans=${ans:-y} # default to y on enter pressed
+            ans=$(printf '%s' "$ans" | tr '[:upper:]' '[:lower:]')
+            if [[ "${ans}" == "y" || "${ans}" == "yes" ]]; then
                 mkdir -p "$(dirname -- "$filepath")" && touch -- "$filepath"
                 "$editor" "$filepath"
             fi
