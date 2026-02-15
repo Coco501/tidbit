@@ -11,7 +11,6 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # --- --- #
 
 # --- Helper functions --- #
-# Handles any help request
 handle_help() {
     case "${1,,}" in
         -h|--h|--help|help)
@@ -23,7 +22,12 @@ handle_help() {
     esac
 }
 
-# Checks for too many arguments
+handle_config() {
+    if [[ "$#" -eq 1 && "$1" == "config" ]]; then
+        "$editor" "$script_dir/.tidbitconfig"
+    fi
+}
+
 validate_arg_count() {
     if [ "$#" -gt 2 ]; then
         echo "Too many arguments"
@@ -36,6 +40,7 @@ validate_arg_count() {
 main() {
     validate_arg_count "$@"
     handle_help "$1"
+    handle_config "$@"
 
     if [ -n "$1" ]; then
         subject="$1"
