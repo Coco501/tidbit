@@ -2,44 +2,83 @@
 
 # --- INFO --- #
 # `tidbit` opens interactive search with fzf
-# `tidbit $1 $2` opens subjects/$1/$2.md, $2 defaults to 'tidbit'
+# `tidbit $1 $2` opens subjects/$1/$2.$file_extension, $2 defaults to 'tidbit'
 # --- --- #
 
 # --- Variables --- #
-editor=${TIDBIT_EDITOR:-vim}
+VERSION=1.0.0
 script_dir="$(cd "$(dirname "$0")" && pwd)"
 # --- --- #
 
 # --- Helper functions --- #
+load_config() {
+    . "$script_dir/.tidbitconfig"
+
+    # Fallback defaults
+    editor="${editor:-vim}"
+    file_extension="${file_extension:-md}"
+    fzf_opts="${fzf_opts:-''}"
+}
+
 handle_help() {
     arg1=$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')
     case "${arg1}" in
         -h|--h|--help|help)
             printf "Usage: tidbit [subject] [file]\n"
-            printf "\t- [subject] and [file] are optional\n"
             printf "\t- [subject] specifies the subject under tidbit/subjects/\n"
-            printf "\t- [file] specifies the file under that subject, defaults to tidbit (.md is assumed)\n"
+            printf "\t- [file] specifies the file under that subject, defaults to tidbit (file extension is assumed)\n"
+            printf "\t- [subject] and [file] are optional\n"
+            printf "\n"
+            printf "Unique commands:\n"
+            printf "\t- 'tidbit help' to open this dialogue\n"
+            printf "\t- 'tidbit config' to edit your config file\n"
             exit 0
     esac
+}
+
+handle_version() {
+    arg1=$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')
+    case "${arg1}" in
+        -v|--v|--version|version)
+            printf "tidbit version %s\n" "$VERSION"
+            exit 0
+            ;;
+    esac
+}
+
+handle_config_edit() {
+    if [[ "$#" -eq 1 && "$1" == "config" ]]; then
+        if [ -f "$script_dir/.tidbitconfig" ]; then
+            "$editor" "$script_dir/.tidbitconfig"
+            exit 0
+        else
+            printf "error: %s/.tidbitconfig not found\n" "$script_dir"
+            exit 1
+        fi
+    fi
 }
 
 validate_arg_count() {
     if [ "$#" -gt 2 ]; then
         printf "Too many arguments\n"
         handle_help help
+        exit 1
     fi
 }
 # --- --- #
 
 # --- Main --- #
 main() {
+    load_config
     validate_arg_count "$@"
     handle_help "$1"
+    handle_version "$1"
+    handle_config_edit "$@"
 
     if [ -n "$1" ]; then
         subject="$1"
         filename="${2:-tidbit}"
-        filepath="$script_dir/subjects/$subject/$filename.md"
+        filepath="$script_dir/subjects/$subject/$filename.$file_extension"
 
         if [ -f "$filepath" ]; then
             "$editor" "$filepath"
@@ -53,7 +92,20 @@ main() {
             fi
         fi
     else
-        filepath=$(find "$script_dir/subjects" -name '*.md' | fzf --prompt="Select file: ")
+        # Display only the subject/filename in fzf
+        filepath=$(
+          find "$script_dir/subjects" -name "*.${file_extension}" |
+          awk -F/ '{
+              n=NF
+              short=""
+              for (i=(n>2?n-1:1); i<=n; i++)
+                  short = short (i==(n>2?n-1:1)?"":"/") $i
+              print short "\t" $0
+          }' |
+          fzf --preview="cat {2}" --with-nth=1 --delimiter=$'\t' "${fzf_opts[@]}" |
+          cut -f2
+        )
+
         if [ -n "$filepath" ]; then
             "$editor" "$filepath"
         fi

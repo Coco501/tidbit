@@ -1,0 +1,35 @@
+# User Options
+editor=vim
+file_extension=md
+
+# fzf Options
+fzf_opts=(
+  --exact # for exact matches only when searching
+  --border=rounded
+  --padding=15%
+  --prompt="tidbit "
+  --pointer='>o' # it's a lil fish :3
+  --color=fg:#8fb6e3
+  --color=bg:#30343b
+  --color=preview-fg:#FFF3DE
+  --color=preview-bg:#30343b
+  --color=hl:#FFBE2C
+  --color=hl+:#5acff2
+  --color=fg+:#e3ce9f
+  --color=bg+:#687d96
+  --color=gutter:#30343b
+  --color=pointer:#e0ca96
+  --color=query:#FFBE2C
+  --color=disabled:
+  --color=info:
+  --color=border:#FFBE2C
+  --color=prompt:#7ba3d1
+  --color=marker:
+  --color=header:
+  --color=spinner:
+  # --preview='cat {2}' # handled in executable
+  # border label options only work with fzf 35.0 and newer
+  # --border-label=tidbit \
+  # --border-label-pos=3 \
+)
+
