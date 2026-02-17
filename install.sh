@@ -25,8 +25,6 @@ determine_rc_file() {
         printf "%b\n" "${C_RED}$RC_FILE not found, exiting${C_RESET}"
         exit 1
     fi
-
-    printf "Using %s for configuration\n" "$RC_FILE"
 }
 
 install_fzf() {
@@ -96,6 +94,7 @@ select_editor() {
 main() {
     printf "Using %s as home directory\n" "$HOME"
     determine_rc_file
+    printf "Using %s for configuration\n" "$RC_FILE"
 
     # Check for existence of fzf
     if ! command -v fzf >/dev/null 2>&1; then
@@ -109,29 +108,29 @@ main() {
         # Fetch dir of this script
         TIDBIT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-        if ! grep -Fq "$TIDBIT_DIR" "$RC_FILE"; then
+        if ! grep -Fq "export PATH=\"$TIDBIT_DIR" "$RC_FILE"; then
             printf "# append tidbit executable to path\n" >> "$RC_FILE"
             printf "%b\n" "export PATH=\"$TIDBIT_DIR:\$PATH\"" >> "$RC_FILE"
         else
             printf "%b\n" "${C_YELLOW}'tidbit' was already added to PATH in $RC_FILE ${C_RESET}"
         fi
-
-        select_editor
-
-        if ! grep -Fq "TIDBIT_EDITOR" "$RC_FILE"; then
-            printf "# editor used by tidbit\n" >> "$RC_FILE"
-            printf "%b\n" "export TIDBIT_EDITOR=$EDITOR" >> "$RC_FILE"
-        else
-            printf "%b\n" "${C_YELLOW}$TIDBIT_EDITOR was already set in $RC_FILE ${C_RESET}"
-        fi
-
-        # set_config
-
-        printf "%b\n" "${C_GREEN}Installation complete, open a new terminal session and run 'tidbit'${C_RESET}"
     else
         printf "Permission to add tidbit to PATH denied, exiting\n"
         exit 1
     fi
+
+    select_editor
+
+    if ! grep -Fq "TIDBIT_EDITOR" "$RC_FILE"; then
+        printf "# editor used by tidbit\n" >> "$RC_FILE"
+        printf "%b\n" "export TIDBIT_EDITOR=$EDITOR" >> "$RC_FILE"
+    else
+        printf "%b\n" "${C_YELLOW}$TIDBIT_EDITOR was already set in $RC_FILE ${C_RESET}"
+    fi
+
+    # set_config
+
+    printf "%b\n" "${C_GREEN}Installation complete, open a new terminal session and run 'tidbit'${C_RESET}"
 }
 # --- --- #
 
