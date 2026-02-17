@@ -2,6 +2,7 @@
 
 # --- Variables --- #
 script_dir="$(cd "$(dirname "$0")" && pwd)"
+config_file="$script_dir/.tidbitconfig"
 
 # CLI Color constants
 C_RESET='\033[0m'
@@ -77,17 +78,36 @@ select_editor() {
     esac
 }
 
-# set_config() {
-#     config_file="$script_dir/.tidbitconfig"
-#     touch  "$config_file"
-#     printf "%b" \
-# "\
-# editor=$EDITOR\n\
-# file_extension=md\n\
-# tidbit_dir=$script_dir\n\
-# "\
-# >> "$config_file"
-# }
+select_file_extension() {
+    read -rp "Which file extension do you want to use for tidbit? [default is md] " ans
+    ans=${ans:-md}
+    file_extension=$ans
+}
+
+set_config_var() {
+    key=$1
+    value=$2
+
+    if grep -q "^${key}=" "$config_file"; then
+        if sed --version >/dev/null 2>&1; then
+            # GNU sed (Linux)
+            sed -i "s|^${key}=.*|${key}=${value}|" "$config_file"
+        else
+            # BSD sed (macOS)
+            sed -i '' "s|^${key}=.*|${key}=${value}|" "$config_file"
+        fi
+    else
+        printf "%s=%s\n" "$key" "$value" >> "$config_file"
+    fi
+}
+
+update_config() {
+    touch  "$config_file"
+
+    set_config_var "editor" "$EDITOR" "$tmp"
+    set_config_var "file_extension" "$file_extension"
+    set_config_var "tidbit_dir" "$script_dir"
+}
 # --- --- #
 
 # --- Main --- #
@@ -126,9 +146,11 @@ main() {
         printf "%b\n" "export TIDBIT_EDITOR=$EDITOR" >> "$RC_FILE"
     else
         printf "%b\n" "${C_YELLOW}$TIDBIT_EDITOR was already set in $RC_FILE ${C_RESET}"
+        EDITOR=$TIDBIT_EDITOR
     fi
 
-    # set_config
+    select_file_extension
+    update_config
 
     printf "%b\n" "${C_GREEN}Installation complete, open a new terminal session and run 'tidbit'${C_RESET}"
 }
