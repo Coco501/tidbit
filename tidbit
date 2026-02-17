@@ -1,32 +1,31 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # --- INFO --- #
 # `tidbit` opens interactive search with fzf
 # `tidbit $1 $2` opens subjects/$1/$2.md, $2 defaults to 'tidbit'
 # --- --- #
 
-# Variables
+# --- Variables --- #
 editor=${TIDBIT_EDITOR:-vim}
-script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+script_dir="$(cd "$(dirname "$0")" && pwd)"
+# --- --- #
 
 # --- Helper functions --- #
-
-# Handles any help request
 handle_help() {
-    case "${1,,}" in
+    arg1=$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')
+    case "${arg1}" in
         -h|--h|--help|help)
-            echo -e "Usage: tidbit [subject] [file]"
-            echo -e "\t- [subject] and [file] are optional"
-            echo -e "\t- [subject] defines the subject under tidbit/subjects/"
-            echo -e "\t- [file] defines the file under that subject, defaults to tidbit (.md is assumed)"
+            printf "Usage: tidbit [subject] [file]\n"
+            printf "\t- [subject] and [file] are optional\n"
+            printf "\t- [subject] specifies the subject under tidbit/subjects/\n"
+            printf "\t- [file] specifies the file under that subject, defaults to tidbit (.md is assumed)\n"
             exit 0
     esac
 }
 
-# Checks for too many arguments
 validate_arg_count() {
     if [ "$#" -gt 2 ]; then
-        echo "Too many arguments"
+        printf "Too many arguments\n"
         handle_help help
     fi
 }
@@ -46,14 +45,18 @@ main() {
             "$editor" "$filepath"
         else
             read -rp "$filepath not found, create it now? [y/n] " ans
-            if [[ "${ans,,}" == "y" || "${ans,,}" == "yes" ]]; then
+            ans=${ans:-y} # default to y on enter pressed
+            ans=$(printf '%s' "$ans" | tr '[:upper:]' '[:lower:]')
+            if [ "${ans}" == "y" ] || [ "${ans}" == "yes" ]; then
                 mkdir -p "$(dirname -- "$filepath")" && touch -- "$filepath"
                 "$editor" "$filepath"
             fi
         fi
     else
         filepath=$(find "$script_dir/subjects" -name '*.md' | fzf --prompt="Select file: ")
-        [[ -n "$filepath" ]] && "$editor" "$filepath"
+        if [ -n "$filepath" ]; then
+            "$editor" "$filepath"
+        fi
     fi
 }
 # --- --- #
