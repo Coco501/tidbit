@@ -6,28 +6,31 @@
 # --- --- #
 
 # --- Variables --- #
-editor=${TIDBIT_EDITOR:-vim}
 script_dir="$(cd "$(dirname "$0")" && pwd)"
 # --- --- #
 
 # --- Helper functions --- #
-# load_config() {
-#     . "$script_dir/.tidbitconfig"
-#
-#     # Fallback defaults
-#     ${editor:-vim}
-#     ${file_extension:-md}
-#     ${fzf:-fzf}
-# }
+load_config() {
+    . "$script_dir/.tidbitconfig"
+
+    # Fallback defaults
+    editor="${editor:-vim}"
+    file_extension="${file_extension:-md}"
+    fzf_opts="${fzf_opts:-''}"
+}
 
 handle_help() {
     arg1=$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')
     case "${arg1}" in
         -h|--h|--help|help)
             printf "Usage: tidbit [subject] [file]\n"
-            printf "\t- [subject] and [file] are optional\n"
             printf "\t- [subject] specifies the subject under tidbit/subjects/\n"
-            printf "\t- [file] specifies the file under that subject, defaults to tidbit (.md is assumed)\n"
+            printf "\t- [file] specifies the file under that subject, defaults to tidbit (file extension is assumed)\n"
+            printf "\t- [subject] and [file] are optional\n"
+            printf "\n"
+            printf "Unique commands:\n"
+            printf "\t- 'tidbit help' to open this dialogue\n"
+            printf "\t- 'tidbit config' to edit your config file\n"
             exit 0
     esac
 }
@@ -35,6 +38,7 @@ handle_help() {
 handle_config_edit() {
     if [[ "$#" -eq 1 && "$1" == "config" ]]; then
         "$editor" "$script_dir/.tidbitconfig"
+        exit 0
     fi
 }
 
@@ -42,6 +46,7 @@ validate_arg_count() {
     if [ "$#" -gt 2 ]; then
         printf "Too many arguments\n"
         handle_help help
+        exit 1
     fi
 }
 # --- --- #
@@ -70,7 +75,7 @@ main() {
             fi
         fi
     else
-        filepath=$(find "$script_dir/subjects" -name '*.md' | fzf --prompt="Select file: ")
+        filepath=$(find "$script_dir/subjects" -name "*.${file_extension}" | fzf "${fzf_opts[@]}")
         if [ -n "$filepath" ]; then
             "$editor" "$filepath"
         fi

@@ -80,7 +80,12 @@ select_editor() {
 
 select_file_extension() {
     read -rp "Which file extension do you want to use for tidbit? [default is md] " ans
-    ans=${ans:-md}
+
+    # strip all leading dots
+    while [[ $ans == .* ]]; do
+        ans=${ans#.}
+    done
+
     file_extension=$ans
 }
 
@@ -104,9 +109,8 @@ set_config_var() {
 update_config() {
     touch  "$config_file"
 
-    set_config_var "editor" "$EDITOR" "$tmp"
+    set_config_var "editor" "$EDITOR"
     set_config_var "file_extension" "$file_extension"
-    set_config_var "tidbit_dir" "$script_dir"
 }
 # --- --- #
 
@@ -125,12 +129,9 @@ main() {
     ans=${ans:-y} # default to y on enter pressed
     ans=$(printf '%s' "$ans" | tr '[:upper:]' '[:lower:]')
     if [ "${ans}" == "y" ] || [ "${ans}" == "yes" ]; then
-        # Fetch dir of this script
-        TIDBIT_DIR="$(cd "$(dirname "$0")" && pwd)"
-
-        if ! grep -Fq "export PATH=\"$TIDBIT_DIR" "$RC_FILE"; then
+        if ! grep -Fq "export PATH=\"$script_dir" "$RC_FILE"; then
             printf "# append tidbit executable to path\n" >> "$RC_FILE"
-            printf "%b\n" "export PATH=\"$TIDBIT_DIR:\$PATH\"" >> "$RC_FILE"
+            printf "%b\n" "export PATH=\"$script_dir:\$PATH\"" >> "$RC_FILE"
         else
             printf "%b\n" "${C_YELLOW}'tidbit' was already added to PATH in $RC_FILE ${C_RESET}"
         fi
@@ -140,15 +141,6 @@ main() {
     fi
 
     select_editor
-
-    if ! grep -Fq "TIDBIT_EDITOR" "$RC_FILE"; then
-        printf "# editor used by tidbit\n" >> "$RC_FILE"
-        printf "%b\n" "export TIDBIT_EDITOR=$EDITOR" >> "$RC_FILE"
-    else
-        printf "%b\n" "${C_YELLOW}$TIDBIT_EDITOR was already set in $RC_FILE ${C_RESET}"
-        EDITOR=$TIDBIT_EDITOR
-    fi
-
     select_file_extension
     update_config
 
