@@ -1,4 +1,9 @@
-# tidbit
+<div align="center">
+  <img src="https://raw.githubusercontent.com/coco501/images/main/tidbit_small.png" alt="tidbit">
+</div>
+
+#
+
 tidbit is a lightweight command-line tool that keeps your notes organized and instantly accessible  
 
 ## Install
@@ -10,7 +15,7 @@ After cloning the repository, run the install script from the root of the projec
 - adds `tidbit` to your PATH so it can be ran from anywhere  
 
 ## Usage
-Run tidbit in interactive mode (Ctrl+J and Ctrl+K for file selection)  
+Run tidbit in interactive mode with fzf (Ctrl+J and Ctrl+K for file selection)  
 ```
 tidbit
 ```
