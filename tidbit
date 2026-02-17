@@ -2,7 +2,7 @@
 
 # --- INFO --- #
 # `tidbit` opens interactive search with fzf
-# `tidbit $1 $2` opens subjects/$1/$2.md, $2 defaults to 'tidbit'
+# `tidbit $1 $2` opens subjects/$1/$2.$file_extension, $2 defaults to 'tidbit'
 # --- --- #
 
 # --- Variables --- #
@@ -11,18 +11,27 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # --- --- #
 
 # --- Helper functions --- #
+# load_config() {
+#     . "$script_dir/.tidbitconfig"
+#
+#     # Fallback defaults
+#     ${editor:-vim}
+#     ${file_extension:-md}
+#     ${fzf:-fzf}
+# }
+
 handle_help() {
     case "${1,,}" in
         -h|--h|--help|help)
             echo -e "Usage: tidbit [subject] [file]"
             echo -e "\t- [subject] and [file] are optional"
             echo -e "\t- [subject] defines the subject under tidbit/subjects/"
-            echo -e "\t- [file] defines the file under that subject, defaults to tidbit (.md is assumed)"
+            echo -e "\t- [file] defines the file under that subject, defaults to tidbit (.$file_extension is assumed)"
             exit 0
     esac
 }
 
-handle_config() {
+handle_config_edit() {
     if [[ "$#" -eq 1 && "$1" == "config" ]]; then
         "$editor" "$script_dir/.tidbitconfig"
     fi
@@ -38,14 +47,15 @@ validate_arg_count() {
 
 # --- Main --- #
 main() {
+    load_config
     validate_arg_count "$@"
     handle_help "$1"
-    handle_config "$@"
+    handle_config_edit "$@"
 
     if [ -n "$1" ]; then
         subject="$1"
         filename="${2:-tidbit}"
-        filepath="$script_dir/subjects/$subject/$filename.md"
+        filepath="$script_dir/subjects/$subject/$filename.$file_extension"
 
         if [ -f "$filepath" ]; then
             "$editor" "$filepath"
@@ -58,7 +68,7 @@ main() {
             fi
         fi
     else
-        filepath=$(find "$script_dir/subjects" -name '*.md' | fzf --prompt="Select file: ")
+        filepath=$(find "$script_dir/subjects" -name '*.file_extension' | fzf --prompt="Select file: ")
         [[ -n "$filepath" ]] && "$editor" "$filepath"
     fi
 }

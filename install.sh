@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 
+# --- Variables --- #
+script_dir="$(cd "$(dirname "$0")" && pwd)"
+
 # CLI Color constants
 C_RESET='\033[0m'
 C_GREEN='\033[0;32m'
 C_YELLOW='\033[0;33m'
 C_RED='\033[0;31m'
+# --- --- #
 
 # --- Helper functions --- #
-
-# Install fzf with package manager detection
 install_fzf() {
     if command -v apt >/dev/null 2>&1; then
         sudo apt install -y fzf
@@ -27,7 +29,6 @@ install_fzf() {
     fi
 }
 
-# Prompt user to select their editor of choice
 select_editor() {
     echo ""
     read -rp "Which editor do you want to use with tidbit? [vim/nvim/nano] " ans
@@ -47,6 +48,18 @@ select_editor() {
             ;;
     esac
 }
+
+# set_config() {
+#     config_file="$script_dir/.tidbitconfig"
+#     touch  "$config_file"
+#     printf "%b" \
+# "\
+# editor=$EDITOR\n\
+# file_extension=md\n\
+# tidbit_dir=$script_dir\n\
+# "\
+# >> "$config_file"
+# }
 # --- --- #
 
 # --- Main --- #
@@ -96,6 +109,8 @@ main() {
         else
             echo -e "${C_YELLOW}\$TIDBIT_EDITOR was already set in $HOME/.bashrc${C_RESET}"
         fi
+
+        # set_config
 
         echo -e "\n${C_GREEN}Installation complete, open a new terminal session and run 'tidbit'\n${C_RESET}"
     else
