@@ -4,12 +4,8 @@ file_extension=md
 
 # fzf Options
 fzf_opts=(
-  --preview "cat {}"
-  --border=rounded
-# border label options only work with fzf 35.0 and newer
-# --border-label=tidbit \
-# --border-label-pos=3 \
   --exact # for exact matches only when searching
+  --border=rounded
   --padding=15%
   --prompt="tidbit "
   --pointer='>o' # it's a lil fish :3
@@ -31,5 +27,9 @@ fzf_opts=(
   --color=marker:
   --color=header:
   --color=spinner:
+  # --preview='cat {2}' # handled in executable
+  # border label options only work with fzf 35.0 and newer
+  # --border-label=tidbit \
+  # --border-label-pos=3 \
 )
 
