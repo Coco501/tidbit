@@ -4,9 +4,9 @@ file_extension=md
 
 # fzf Options
 fzf_opts=(
-  --exact # for exact matches only when searching
+  --exact # for exact matches only
   --border=rounded
-  --padding=15%
+  --padding=5%
   --prompt="tidbit "
   --pointer='>o' # it's a lil fish :3
   --color=fg:#8fb6e3
@@ -28,9 +28,10 @@ fzf_opts=(
   --color=marker:
   --color=header:
   --color=spinner:
-  # --preview='cat {2}' # handled in executable
   # WARNING: border label options only work with fzf 35.0 and newer
   --border-label=tidbit
   --border-label-pos=2
+  --bind='ctrl-u:preview-half-page-up'
+  --bind='ctrl-d:preview-half-page-down'
 )
 

@@ -104,7 +104,7 @@ main() {
               sub("/" default_file "$", "", short)
               print short "\t" $0
           }' |
-          fzf --preview="cat {2}" --with-nth=1 --delimiter=$'\t' "${fzf_opts[@]}" |
+          fzf --preview='nl -ba -nrn -w3 -s "  " {2} | sed "s/^ *[0-9]*/\x1b[90m&\x1b[0m/"' --with-nth=1 --delimiter=$'\t' "${fzf_opts[@]}" |
           cut -f2
         )
 
