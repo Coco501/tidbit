@@ -79,6 +79,12 @@ main() {
     if [ -n "$1" ]; then
         subject="$1"
         filename="${2:-tidbit}"
+
+        # Strip file extension if it exists
+        if [[ "$filename" == *."$file_extension" ]]; then
+            filename="${filename%.*}"
+        fi
+
         filepath="$script_dir/subjects/$subject/$filename.$file_extension"
 
         if [ -f "$filepath" ]; then
