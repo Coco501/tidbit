@@ -95,11 +95,13 @@ main() {
         # Display only the subject/filename in fzf
         filepath=$(
           find "$script_dir/subjects" -name "*.${file_extension}" |
-          awk -F/ '{
+          awk -v default_file="tidbit" -F/ '{
               n=NF
               short=""
               for (i=(n>2?n-1:1); i<=n; i++)
                   short = short (i==(n>2?n-1:1)?"":"/") $i
+              sub(/\.[^.]+$/, "", short)
+              sub("/" default_file "$", "", short)
               print short "\t" $0
           }' |
           fzf --preview="cat {2}" --with-nth=1 --delimiter=$'\t' "${fzf_opts[@]}" |
