@@ -29,7 +29,7 @@ determine_rc_file() {
 }
 
 install_fzf() {
-    read -rp "tidbit requires fzf for fuzzy searching, install it? [y/n] " ans
+    read -rp "tidbit requires fzf for fuzzy searching, install it? [Y/n] " ans
     ans=${ans:-y} # default to y on enter pressed
     ans=$(printf '%s' "$ans" | tr '[:upper:]' '[:lower:]')
     if [ "${ans}" == "y" ] || [ "${ans}" == "yes" ]; then
@@ -125,7 +125,7 @@ main() {
         install_fzf
     fi
 
-    read -rp "Allow tidbit to be added to your PATH? [y/n] " ans
+    read -rp "Allow tidbit to be added to your PATH? [Y/n] " ans
     ans=${ans:-y} # default to y on enter pressed
     ans=$(printf '%s' "$ans" | tr '[:upper:]' '[:lower:]')
     if [ "${ans}" == "y" ] || [ "${ans}" == "yes" ]; then

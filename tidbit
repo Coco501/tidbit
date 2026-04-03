@@ -6,7 +6,7 @@
 # --- --- #
 
 # --- Variables --- #
-VERSION=1.0.0
+VERSION=1.1.0
 script_dir="$(cd "$(dirname "$0")" && pwd)"
 # --- --- #
 
@@ -32,6 +32,7 @@ handle_help() {
             printf "Unique Commands:\n"
             printf "\t- 'tidbit help' to open this dialogue\n"
             printf "\t- 'tidbit config' to edit your config file\n"
+            printf "\t- 'tidbit version' to display the version\n"
             exit 0
     esac
 }
@@ -83,7 +84,7 @@ main() {
         if [ -f "$filepath" ]; then
             "$editor" "$filepath"
         else
-            read -rp "$filepath not found, create it now? [y/n] " ans
+            read -rp "$filepath not found, create it now? [Y/n] " ans
             ans=${ans:-y} # default to y on enter pressed
             ans=$(printf '%s' "$ans" | tr '[:upper:]' '[:lower:]')
             if [ "${ans}" == "y" ] || [ "${ans}" == "yes" ]; then
