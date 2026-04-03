@@ -29,7 +29,7 @@ handle_help() {
             printf "\t- [file] specifies the file under that subject, defaults to tidbit (file extension is assumed)\n"
             printf "\t- [subject] and [file] are optional\n"
             printf "\n"
-            printf "Unique commands:\n"
+            printf "Unique Commands:\n"
             printf "\t- 'tidbit help' to open this dialogue\n"
             printf "\t- 'tidbit config' to edit your config file\n"
             exit 0
