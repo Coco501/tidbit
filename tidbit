@@ -62,7 +62,7 @@ handle_config_edit() {
 validate_arg_count() {
     if [ "$#" -gt 2 ]; then
         printf "Too many arguments\n"
-        handle_help help
+        (handle_help help)
         exit 1
     fi
 }
