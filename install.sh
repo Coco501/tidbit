@@ -29,7 +29,7 @@ determine_rc_file() {
 }
 
 install_fzf() {
-    read -rp "tidbit requires fzf for fuzzy searching, install it? [y/n] " ans
+    read -rp "tidbit requires fzf for fuzzy searching, install it? [Y/n] " ans
     ans=${ans:-y} # default to y on enter pressed
     ans=$(printf '%s' "$ans" | tr '[:upper:]' '[:lower:]')
     if [ "${ans}" == "y" ] || [ "${ans}" == "yes" ]; then
@@ -86,7 +86,12 @@ select_file_extension() {
         ans=${ans#.}
     done
 
-    file_extension=$ans
+    file_extension=${ans:-md}
+}
+
+select_alias() {
+    read -rp "Would you like a short alias for tidbit? [leave blank to skip] " ans
+    alias_name="$ans"
 }
 
 set_config_var() {
@@ -103,6 +108,18 @@ set_config_var() {
         fi
     else
         printf "%s=%s\n" "$key" "$value" >> "$config_file"
+    fi
+}
+
+install_completion() {
+    local completion_file="$script_dir/completions/tidbit-completion.$1"
+    local source_line=". \"$completion_file\""
+
+    if ! grep -Fq "$completion_file" "$RC_FILE"; then
+        printf "# tidbit shell completion\n" >> "$RC_FILE"
+        printf "%s\n" "$source_line" >> "$RC_FILE"
+    else
+        printf "%b\n" "${C_YELLOW}tidbit completion was already added to $RC_FILE ${C_RESET}"
     fi
 }
 
@@ -125,12 +142,12 @@ main() {
         install_fzf
     fi
 
-    read -rp "Allow tidbit to be added to your PATH? [y/n] " ans
+    read -rp "Allow tidbit to be added to your PATH? [Y/n] " ans
     ans=${ans:-y} # default to y on enter pressed
     ans=$(printf '%s' "$ans" | tr '[:upper:]' '[:lower:]')
     if [ "${ans}" == "y" ] || [ "${ans}" == "yes" ]; then
         if ! grep -Fq "export PATH=\"$script_dir" "$RC_FILE"; then
-            printf "# append tidbit executable to path\n" >> "$RC_FILE"
+            printf "\n# append tidbit executable to path\n" >> "$RC_FILE"
             printf "%b\n" "export PATH=\"$script_dir:\$PATH\"" >> "$RC_FILE"
         else
             printf "%b\n" "${C_YELLOW}'tidbit' was already added to PATH in $RC_FILE ${C_RESET}"
@@ -142,7 +159,23 @@ main() {
 
     select_editor
     select_file_extension
+    select_alias
     update_config
+
+    case "$SHELL" in
+        */zsh) install_completion zsh ;;
+        *)     install_completion bash ;;
+    esac
+
+    if [ -n "$alias_name" ]; then
+        if ! grep -Fq "alias $alias_name=" "$RC_FILE"; then
+            printf "alias %s=tidbit\n" "$alias_name" >> "$RC_FILE"
+            case "$SHELL" in
+                */zsh) printf "compdef _tidbit %s\n" "$alias_name" >> "$RC_FILE" ;;
+                *)     printf "complete -F _tidbit_complete %s\n" "$alias_name" >> "$RC_FILE" ;;
+            esac
+        fi
+    fi
 
     printf "%b\n" "${C_GREEN}Installation complete, open a new terminal session and run 'tidbit'${C_RESET}"
 }

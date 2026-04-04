@@ -1,40 +1,47 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/coco501/images/main/tidbit_small.png" alt="tidbit">
+  <img src="https://raw.githubusercontent.com/coco501/images/main/tidbit_small.png" alt="tidbit logo">
+  <p><b>tidbit</b> - easy note-taking</p>
 </div>
 
-#
+## About
+<b>tidbit</b> is a light-weight command-line tool that I made in response to my increasing frustration from dozens of scattered note files
 
-tidbit is a lightweight command-line tool that keeps your notes organized and instantly accessible  
+Highlights:
+- never lose your notes
+- simple organization, instant access
+- interactive fuzzy searching & previewing (with [fzf](https://github.com/junegunn/fzf))
+- usable by a 3-year-old
 
 ## Install
-After cloning the repository, run the install script from the root of the project  
+Run the install script from the root of the project  
 ```
 ./install.sh
 ```
-- installs `fzf` for interactive fuzzy searching  
-- adds `tidbit` to your PATH so it can be ran from anywhere  
+- installs [fzf](https://github.com/junegunn/fzf) for interactive fuzzy searching
+- adds tidbit to your PATH
 
 ## Usage
-Run tidbit in interactive mode with fzf (Ctrl+J and Ctrl+K for file selection)  
+Run tidbit in interactive mode with fzf (Ctrl+J and Ctrl+K for file selection):
 ```
 tidbit
 ```
 
-Open a subject's `tidbit.md` file  
+<br>
+
+Open a subject's `tidbit.md` file:
 ```
 tidbit [subject]
+
+tidbit vim 
+- opens subjects/vim/tidbit.md
 ```
 
-Open a specific `.md` file  
+<br>
+
+Open a subject's specific `.md` file:
 ```
 tidbit [subject] [file]
+
+tidbit vim motions 
+- opens subjects/vim/motions.md
 ```
-
-## Example Commands
-`tidbit vim` - opens subjects/vim/tidbit.md  
-`tidbit vim motions` - opens subjects/vim/motions.md  
-
-## Personalize
-Add as many tidbits as you want!  
-I recommend making your own fork of this repository for easy version control  
-
