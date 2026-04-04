@@ -17,8 +17,9 @@ _tidbit_complete() {
             file_extension="${file_extension:-md}"
             local files
             files=$(ls "$tidbit_dir/subjects/$subject/" 2>/dev/null | sed "s/\.$file_extension$//")
-            COMPREPLY=($(compgen -W "$files" -- "$cur"))
+            COMPREPLY=($(compgen -W "$files" -- "$cur" || true))
             ;;
     esac
+    return 0
 }
 complete -F _tidbit_complete tidbit
