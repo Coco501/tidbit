@@ -6,8 +6,8 @@
 ## About
 <b>tidbit</b> is a light-weight command-line tool that I made in response to my increasing frustration from dozens of scattered note files
 
-Highlights:
-- never lose your notes
+- never lose track of your notes
+- save the commands you always forget
 - simple organization, instant access
 - interactive fuzzy searching & previewing (with [fzf](https://github.com/junegunn/fzf))
 - usable by a 3-year-old
@@ -21,27 +21,8 @@ Run the install script from the root of the project
 - adds tidbit to your PATH
 
 ## Usage
-Run tidbit in interactive mode with fzf (Ctrl+J and Ctrl+K for file selection):
 ```
-tidbit
-```
-
-<br>
-
-Open a subject's `tidbit.md` file:
-```
-tidbit [subject]
-
-tidbit vim 
-- opens subjects/vim/tidbit.md
-```
-
-<br>
-
-Open a subject's specific `.md` file:
-```
-tidbit [subject] [file]
-
-tidbit vim motions 
-- opens subjects/vim/motions.md
+tidbit                  # interactive mode with fzf (Ctrl+J/K to navigate)
+tidbit [subject]        # open subjects/[subject]/tidbit.md
+tidbit [subject] [file] # open subjects/[subject]/[file].md
 ```
